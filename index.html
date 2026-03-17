@@ -1,0 +1,1669 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>VOLT — Electronics Redefined</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet"/>
+  <style>
+    /* ── Reset & Variables ─────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:       #0a0a0f;
+      --surface:  #111118;
+      --card:     #16161f;
+      --border:   #2a2a3a;
+      --accent:   #e8ff3c;
+      --accent2:  #00d4ff;
+      --accent3:  #ff4c7a;
+      --text:     #f0f0f8;
+      --muted:    #7070a0;
+      --font-hero: 'Bebas Neue', sans-serif;
+      --font-body: 'DM Sans', sans-serif;
+      --font-mono: 'Space Mono', monospace;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font-body);
+      font-size: 16px;
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    a { text-decoration: none; color: inherit; }
+    img { display: block; max-width: 100%; }
+    ul { list-style: none; }
+
+    /* ── Noise Overlay ─────────────────────────────────────────── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+      opacity: 0.025;
+      pointer-events: none;
+      z-index: 1000;
+    }
+
+    /* ── Nav ───────────────────────────────────────────────────── */
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 900;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1.2rem 4rem;
+      background: rgba(10,10,15,0.85);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav-logo {
+      font-family: var(--font-hero);
+      font-size: 2rem;
+      letter-spacing: 0.1em;
+      color: var(--accent);
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 2.5rem;
+    }
+
+    .nav-links a {
+      font-size: 0.85rem;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover { color: var(--text); }
+
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 1.2rem;
+    }
+
+    .nav-cart {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      background: var(--accent);
+      color: #000;
+      padding: 0.5rem 1.2rem;
+      font-weight: 700;
+    }
+
+    .nav-search {
+      color: var(--muted);
+      font-size: 1.1rem;
+      cursor: pointer;
+      transition: color 0.2s;
+    }
+    .nav-search:hover { color: var(--text); }
+
+    /* ── Hero ──────────────────────────────────────────────────── */
+    .hero {
+      position: relative;
+      min-height: 92vh;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      align-items: center;
+      padding: 0 4rem;
+      overflow: hidden;
+    }
+
+    .hero-bg {
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 60% 70% at 70% 50%, rgba(0,212,255,0.06) 0%, transparent 70%),
+        radial-gradient(ellipse 40% 50% at 20% 80%, rgba(232,255,60,0.04) 0%, transparent 60%);
+    }
+
+    .hero-grid {
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(var(--border) 1px, transparent 1px),
+        linear-gradient(90deg, var(--border) 1px, transparent 1px);
+      background-size: 60px 60px;
+      opacity: 0.3;
+      mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black, transparent);
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 2;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--accent2);
+      border: 1px solid var(--accent2);
+      padding: 0.35rem 0.9rem;
+      margin-bottom: 1.8rem;
+      animation: fadeSlideUp 0.6s ease both;
+    }
+
+    .hero-badge span { 
+      width: 6px; height: 6px; 
+      background: var(--accent2); 
+      border-radius: 50%;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.3; }
+    }
+
+    .hero-title {
+      font-family: var(--font-hero);
+      font-size: clamp(5rem, 10vw, 9rem);
+      line-height: 0.92;
+      letter-spacing: -0.01em;
+      animation: fadeSlideUp 0.7s 0.1s ease both;
+    }
+
+    .hero-title em {
+      font-style: normal;
+      color: transparent;
+      -webkit-text-stroke: 2px var(--text);
+    }
+
+    .hero-title .accent-word { color: var(--accent); }
+
+    .hero-sub {
+      margin-top: 2rem;
+      font-size: 1.05rem;
+      color: var(--muted);
+      max-width: 420px;
+      line-height: 1.7;
+      animation: fadeSlideUp 0.7s 0.2s ease both;
+    }
+
+    .hero-cta {
+      margin-top: 2.5rem;
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      animation: fadeSlideUp 0.7s 0.3s ease both;
+    }
+
+    .btn-primary {
+      display: inline-block;
+      background: var(--accent);
+      color: #000;
+      font-weight: 700;
+      font-size: 0.85rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 1rem 2.4rem;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .btn-primary:hover {
+      transform: translate(-2px,-2px);
+      box-shadow: 4px 4px 0 var(--accent2);
+    }
+
+    .btn-secondary {
+      display: inline-block;
+      border: 1px solid var(--border);
+      color: var(--text);
+      font-size: 0.85rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 1rem 2.4rem;
+      transition: border-color 0.2s, color 0.2s;
+    }
+    .btn-secondary:hover { border-color: var(--text); }
+
+    .hero-stats {
+      display: flex;
+      gap: 2.5rem;
+      margin-top: 3.5rem;
+      animation: fadeSlideUp 0.7s 0.4s ease both;
+    }
+
+    .stat-num {
+      font-family: var(--font-hero);
+      font-size: 2.2rem;
+      color: var(--accent);
+      display: block;
+    }
+    .stat-label {
+      font-size: 0.78rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+
+    /* Hero visual side */
+    .hero-visual {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      animation: fadeSlideUp 0.8s 0.2s ease both;
+    }
+
+    .hero-device {
+      position: relative;
+      width: 340px;
+      height: 340px;
+    }
+
+    .device-ring {
+      position: absolute;
+      border-radius: 50%;
+      border: 1px solid;
+      animation: spin linear infinite;
+    }
+
+    .ring-1 {
+      inset: 0;
+      border-color: rgba(232,255,60,0.15);
+      animation-duration: 20s;
+    }
+    .ring-2 {
+      inset: 20px;
+      border-color: rgba(0,212,255,0.12);
+      animation-duration: 15s;
+      animation-direction: reverse;
+    }
+    .ring-3 {
+      inset: 40px;
+      border-color: rgba(255,76,122,0.1);
+      animation-duration: 25s;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .device-center {
+      position: absolute;
+      inset: 60px;
+      background: var(--card);
+      border-radius: 50%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid var(--border);
+      box-shadow: 0 0 60px rgba(0,212,255,0.08), 0 0 120px rgba(232,255,60,0.04);
+    }
+
+    .device-icon {
+      font-size: 4rem;
+      line-height: 1;
+    }
+
+    .device-label {
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      letter-spacing: 0.15em;
+      color: var(--muted);
+      margin-top: 0.5rem;
+    }
+
+    .device-dot {
+      position: absolute;
+      width: 8px; height: 8px;
+      background: var(--accent);
+      border-radius: 50%;
+      box-shadow: 0 0 12px var(--accent);
+    }
+
+    /* Dot positions around the ring */
+    .dot-1 { top: 10px; left: 50%; transform: translateX(-50%); }
+    .dot-2 { bottom: 10px; left: 50%; transform: translateX(-50%); background: var(--accent2); box-shadow: 0 0 12px var(--accent2); }
+    .dot-3 { left: 10px; top: 50%; transform: translateY(-50%); background: var(--accent3); box-shadow: 0 0 12px var(--accent3); }
+
+    @keyframes fadeSlideUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── Marquee ───────────────────────────────────────────────── */
+    .marquee-wrap {
+      overflow: hidden;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      padding: 1rem 0;
+      background: var(--surface);
+    }
+
+    .marquee-track {
+      display: flex;
+      gap: 4rem;
+      width: max-content;
+      animation: marquee 30s linear infinite;
+    }
+
+    .marquee-item {
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--muted);
+      white-space: nowrap;
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+    }
+
+    .marquee-item::after {
+      content: '◆';
+      color: var(--accent);
+      font-size: 0.5rem;
+    }
+
+    @keyframes marquee {
+      from { transform: translateX(0); }
+      to   { transform: translateX(-50%); }
+    }
+
+    /* ── Section shared ────────────────────────────────────────── */
+    section { padding: 7rem 4rem; }
+
+    .section-label {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--accent2);
+      margin-bottom: 0.8rem;
+    }
+
+    .section-title {
+      font-family: var(--font-hero);
+      font-size: clamp(2.8rem, 5vw, 4.5rem);
+      line-height: 0.95;
+      letter-spacing: 0.01em;
+    }
+
+    /* ── Categories ────────────────────────────────────────────── */
+    .categories {
+      background: var(--surface);
+    }
+
+    .categories-header {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      margin-bottom: 3.5rem;
+    }
+
+    .cat-link {
+      font-size: 0.85rem;
+      color: var(--muted);
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 0.2rem;
+      transition: color 0.2s, border-color 0.2s;
+    }
+    .cat-link:hover { color: var(--accent); border-color: var(--accent); }
+
+    .categories-grid {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 1px;
+      background: var(--border);
+    }
+
+    .cat-card {
+      background: var(--card);
+      padding: 2.5rem 1.5rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1rem;
+      cursor: pointer;
+      transition: background 0.25s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .cat-card::before {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 2px;
+      background: var(--accent);
+      transform: scaleX(0);
+      transition: transform 0.3s;
+    }
+
+    .cat-card:hover { background: #1c1c28; }
+    .cat-card:hover::before { transform: scaleX(1); }
+
+    .cat-icon {
+      font-size: 2.4rem;
+      line-height: 1;
+    }
+
+    .cat-name {
+      font-size: 0.82rem;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--text);
+      text-align: center;
+    }
+
+    .cat-count {
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      color: var(--muted);
+    }
+
+    /* ── Featured Products ─────────────────────────────────────── */
+    .products-header {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      margin-bottom: 3.5rem;
+    }
+
+    .filter-tabs {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .tab {
+      font-size: 0.78rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 0.5rem 1.2rem;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      cursor: pointer;
+      transition: all 0.2s;
+      background: transparent;
+    }
+
+    .tab.active {
+      background: var(--accent);
+      color: #000;
+      border-color: var(--accent);
+      font-weight: 700;
+    }
+
+    .tab:hover:not(.active) { border-color: var(--muted); color: var(--text); }
+
+    .products-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1px;
+      background: var(--border);
+    }
+
+    .product-card {
+      background: var(--card);
+      position: relative;
+      overflow: hidden;
+      cursor: pointer;
+      transition: background 0.2s;
+      group: true;
+    }
+
+    .product-card:hover { background: #1a1a25; }
+
+    .product-badge {
+      position: absolute;
+      top: 1rem;
+      left: 1rem;
+      font-family: var(--font-mono);
+      font-size: 0.62rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      padding: 0.3rem 0.7rem;
+      z-index: 2;
+    }
+
+    .badge-new { background: var(--accent); color: #000; }
+    .badge-hot { background: var(--accent3); color: #fff; }
+    .badge-sale { background: var(--accent2); color: #000; }
+
+    .product-fav {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      width: 36px; height: 36px;
+      background: rgba(10,10,15,0.7);
+      border: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+      z-index: 2;
+      cursor: pointer;
+      transition: background 0.2s, border-color 0.2s;
+    }
+
+    .product-fav:hover { background: var(--accent3); border-color: var(--accent3); }
+
+    .product-image {
+      aspect-ratio: 1;
+      background: var(--surface);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 5rem;
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.4s ease;
+    }
+
+    .product-card:hover .product-image { transform: scale(1.03); }
+
+    .product-image::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.03), transparent 70%);
+    }
+
+    .product-info {
+      padding: 1.4rem;
+      border-top: 1px solid var(--border);
+    }
+
+    .product-brand {
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 0.4rem;
+    }
+
+    .product-name {
+      font-weight: 600;
+      font-size: 0.95rem;
+      line-height: 1.3;
+      margin-bottom: 0.6rem;
+      color: var(--text);
+    }
+
+    .product-rating {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .stars {
+      color: var(--accent);
+      font-size: 0.75rem;
+      letter-spacing: -0.05em;
+    }
+
+    .rating-count {
+      font-size: 0.72rem;
+      color: var(--muted);
+      font-family: var(--font-mono);
+    }
+
+    .product-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .product-price {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .price-current {
+      font-family: var(--font-hero);
+      font-size: 1.6rem;
+      color: var(--accent);
+      line-height: 1;
+    }
+
+    .price-old {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      color: var(--muted);
+      text-decoration: line-through;
+    }
+
+    .btn-add {
+      width: 40px; height: 40px;
+      background: var(--border);
+      border: none;
+      color: var(--text);
+      font-size: 1.3rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: background 0.2s, color 0.2s;
+    }
+
+    .btn-add:hover { background: var(--accent); color: #000; }
+
+    /* ── Banner ────────────────────────────────────────────────── */
+    .banner-section {
+      padding: 0 4rem;
+      margin: 0 0 7rem;
+    }
+
+    .banner-inner {
+      background: linear-gradient(135deg, #0d1a0d 0%, #0a0f1a 50%, #1a0a10 100%);
+      border: 1px solid var(--border);
+      padding: 5rem;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      align-items: center;
+      gap: 3rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .banner-inner::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -10%;
+      width: 500px; height: 500px;
+      background: radial-gradient(circle, rgba(232,255,60,0.06), transparent 60%);
+    }
+
+    .banner-inner::after {
+      content: 'DEAL';
+      position: absolute;
+      right: -1rem;
+      top: 50%;
+      transform: translateY(-50%) rotate(90deg);
+      font-family: var(--font-hero);
+      font-size: 8rem;
+      color: rgba(255,255,255,0.02);
+      letter-spacing: 0.1em;
+      white-space: nowrap;
+    }
+
+    .banner-tag {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--accent3);
+      margin-bottom: 1rem;
+    }
+
+    .banner-title {
+      font-family: var(--font-hero);
+      font-size: clamp(3rem, 5vw, 5rem);
+      line-height: 0.95;
+      margin-bottom: 1rem;
+    }
+
+    .banner-desc {
+      color: var(--muted);
+      font-size: 0.95rem;
+      max-width: 480px;
+      line-height: 1.7;
+      margin-bottom: 2rem;
+    }
+
+    .banner-timer {
+      display: flex;
+      gap: 1.5rem;
+    }
+
+    .timer-block {
+      text-align: center;
+    }
+
+    .timer-num {
+      font-family: var(--font-hero);
+      font-size: 2.8rem;
+      color: var(--accent);
+      line-height: 1;
+    }
+
+    .timer-label {
+      font-family: var(--font-mono);
+      font-size: 0.62rem;
+      color: var(--muted);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .banner-product {
+      font-size: 8rem;
+      line-height: 1;
+      position: relative;
+      z-index: 1;
+      animation: float 4s ease-in-out infinite;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-12px); }
+    }
+
+    /* ── Specs Strip ───────────────────────────────────────────── */
+    .specs-strip {
+      padding: 0 4rem 7rem;
+    }
+
+    .specs-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1px;
+      background: var(--border);
+    }
+
+    .spec-item {
+      background: var(--surface);
+      padding: 2.5rem;
+      position: relative;
+      overflow: hidden;
+      transition: background 0.2s;
+    }
+
+    .spec-item:hover { background: var(--card); }
+
+    .spec-number {
+      font-family: var(--font-hero);
+      font-size: 3.5rem;
+      line-height: 1;
+      color: transparent;
+      -webkit-text-stroke: 1px var(--accent);
+      margin-bottom: 0.5rem;
+    }
+
+    .spec-title {
+      font-weight: 600;
+      font-size: 0.95rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .spec-desc {
+      font-size: 0.82rem;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    /* ── Testimonials ──────────────────────────────────────────── */
+    .testimonials {
+      background: var(--surface);
+    }
+
+    .testimonials-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1px;
+      background: var(--border);
+      margin-top: 3.5rem;
+    }
+
+    .testi-card {
+      background: var(--card);
+      padding: 2.5rem;
+      position: relative;
+    }
+
+    .testi-quote {
+      font-size: 3rem;
+      color: var(--accent);
+      font-family: var(--font-hero);
+      line-height: 0.8;
+      margin-bottom: 1rem;
+    }
+
+    .testi-text {
+      font-size: 0.92rem;
+      line-height: 1.75;
+      color: var(--muted);
+      margin-bottom: 2rem;
+    }
+
+    .testi-author {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .author-avatar {
+      width: 42px; height: 42px;
+      border-radius: 50%;
+      background: var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.3rem;
+    }
+
+    .author-name {
+      font-weight: 600;
+      font-size: 0.88rem;
+    }
+
+    .author-role {
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      color: var(--muted);
+      letter-spacing: 0.1em;
+    }
+
+    .testi-stars {
+      position: absolute;
+      top: 2.5rem; right: 2.5rem;
+      color: var(--accent);
+      font-size: 0.8rem;
+      letter-spacing: -0.05em;
+    }
+
+    /* ── Newsletter ────────────────────────────────────────────── */
+    .newsletter {
+      padding: 7rem 4rem;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .newsletter::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 60% 80% at 50% 50%, rgba(232,255,60,0.04), transparent 70%);
+    }
+
+    .newsletter-content {
+      position: relative;
+      z-index: 1;
+      max-width: 560px;
+      margin: 0 auto;
+    }
+
+    .newsletter-title {
+      font-family: var(--font-hero);
+      font-size: clamp(3rem, 5vw, 5rem);
+      line-height: 0.95;
+      margin-bottom: 1rem;
+    }
+
+    .newsletter-sub {
+      color: var(--muted);
+      margin-bottom: 2.5rem;
+      font-size: 0.95rem;
+    }
+
+    .newsletter-form {
+      display: flex;
+      gap: 0;
+      max-width: 480px;
+      margin: 0 auto;
+    }
+
+    .newsletter-input {
+      flex: 1;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-right: none;
+      color: var(--text);
+      padding: 1rem 1.5rem;
+      font-family: var(--font-body);
+      font-size: 0.9rem;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .newsletter-input:focus { border-color: var(--accent); }
+
+    .newsletter-input::placeholder { color: var(--muted); }
+
+    .newsletter-btn {
+      background: var(--accent);
+      color: #000;
+      border: 1px solid var(--accent);
+      padding: 1rem 2rem;
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: background 0.2s;
+    }
+
+    .newsletter-btn:hover { background: #cfee20; }
+
+    /* ── Footer ────────────────────────────────────────────────── */
+    footer {
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+      padding: 5rem 4rem 2rem;
+    }
+
+    .footer-top {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr 1fr;
+      gap: 4rem;
+      margin-bottom: 4rem;
+    }
+
+    .footer-brand .nav-logo {
+      font-size: 2.5rem;
+      display: block;
+      margin-bottom: 1rem;
+    }
+
+    .footer-desc {
+      font-size: 0.88rem;
+      color: var(--muted);
+      line-height: 1.7;
+      max-width: 280px;
+      margin-bottom: 2rem;
+    }
+
+    .footer-socials {
+      display: flex;
+      gap: 0.8rem;
+    }
+
+    .social-btn {
+      width: 38px; height: 38px;
+      border: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.9rem;
+      color: var(--muted);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .social-btn:hover { background: var(--accent); color: #000; border-color: var(--accent); }
+
+    .footer-col-title {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--text);
+      margin-bottom: 1.5rem;
+    }
+
+    .footer-links li {
+      margin-bottom: 0.8rem;
+    }
+
+    .footer-links a {
+      font-size: 0.88rem;
+      color: var(--muted);
+      transition: color 0.2s;
+    }
+
+    .footer-links a:hover { color: var(--text); }
+
+    .footer-bottom {
+      border-top: 1px solid var(--border);
+      padding-top: 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .footer-copy {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      color: var(--muted);
+      letter-spacing: 0.08em;
+    }
+
+    .footer-legal {
+      display: flex;
+      gap: 2rem;
+    }
+
+    .footer-legal a {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      color: var(--muted);
+      transition: color 0.2s;
+    }
+
+    .footer-legal a:hover { color: var(--text); }
+
+    /* ── Hover-reveal Overlay on product ───────────────────────── */
+    .product-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(10,10,15,0.7);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      transition: opacity 0.3s;
+      backdrop-filter: blur(4px);
+    }
+
+    .product-card:hover .product-overlay { opacity: 1; }
+
+    .overlay-btn {
+      background: var(--accent);
+      color: #000;
+      font-weight: 700;
+      font-size: 0.78rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 0.9rem 2rem;
+      border: none;
+      cursor: pointer;
+    }
+
+    /* ── Responsive ────────────────────────────────────────────── */
+    @media (max-width: 1200px) {
+      .products-grid { grid-template-columns: repeat(3, 1fr); }
+      .categories-grid { grid-template-columns: repeat(3, 1fr); }
+      .footer-top { grid-template-columns: 1fr 1fr; gap: 3rem; }
+    }
+
+    @media (max-width: 900px) {
+      nav { padding: 1rem 2rem; }
+      .nav-links { display: none; }
+      .hero { grid-template-columns: 1fr; padding: 3rem 2rem; min-height: auto; gap: 3rem; }
+      .hero-visual { display: none; }
+      section { padding: 4rem 2rem; }
+      .products-grid { grid-template-columns: repeat(2, 1fr); }
+      .categories-grid { grid-template-columns: repeat(3, 1fr); }
+      .testimonials-grid { grid-template-columns: 1fr; }
+      .specs-grid { grid-template-columns: repeat(2, 1fr); }
+      .banner-inner { grid-template-columns: 1fr; padding: 3rem 2rem; }
+      .banner-product { display: none; }
+      .footer-top { grid-template-columns: 1fr; gap: 2.5rem; }
+      .banner-section { padding: 0 2rem; margin-bottom: 4rem; }
+      .specs-strip { padding: 0 2rem 4rem; }
+    }
+
+    @media (max-width: 600px) {
+      .products-grid { grid-template-columns: 1fr; }
+      .categories-grid { grid-template-columns: repeat(2, 1fr); }
+      .specs-grid { grid-template-columns: 1fr; }
+      .newsletter-form { flex-direction: column; }
+      .newsletter-input { border-right: 1px solid var(--border); border-bottom: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <span class="nav-logo">VOLT</span>
+    <ul class="nav-links">
+      <li><a href="#">Products</a></li>
+      <li><a href="#">Deals</a></li>
+      <li><a href="#">Brands</a></li>
+      <li><a href="#">Support</a></li>
+      <li><a href="#">Blog</a></li>
+    </ul>
+    <div class="nav-actions">
+      <span class="nav-search">⌕</span>
+      <a href="#" class="nav-cart">🛒 Cart (3)</a>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero" style="padding-top: 0; padding-bottom: 0;">
+    <div class="hero-bg"></div>
+    <div class="hero-grid"></div>
+
+    <div class="hero-content">
+      <div class="hero-badge">
+        <span></span>
+        New Arrivals — Spring 2026
+      </div>
+      <h1 class="hero-title">
+        FUTURE<br>
+        <em>TECH</em><br>
+        <span class="accent-word">NOW.</span>
+      </h1>
+      <p class="hero-sub">
+        Cutting-edge electronics curated for creators, gamers, and tech enthusiasts. Premium gear at prices that make sense.
+      </p>
+      <div class="hero-cta">
+        <a href="#products" class="btn-primary">Shop Now</a>
+        <a href="#" class="btn-secondary">View Deals</a>
+      </div>
+      <div class="hero-stats">
+        <div>
+          <span class="stat-num">50K+</span>
+          <span class="stat-label">Products</span>
+        </div>
+        <div>
+          <span class="stat-num">200+</span>
+          <span class="stat-label">Brands</span>
+        </div>
+        <div>
+          <span class="stat-num">4.9★</span>
+          <span class="stat-label">Rating</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="hero-visual">
+      <div class="hero-device">
+        <div class="device-ring ring-1"></div>
+        <div class="device-ring ring-2"></div>
+        <div class="device-ring ring-3"></div>
+        <div class="device-center">
+          <div class="device-icon">⚡</div>
+          <div class="device-label">VOLT STORE</div>
+        </div>
+        <div class="device-dot dot-1"></div>
+        <div class="device-dot dot-2"></div>
+        <div class="device-dot dot-3"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- MARQUEE -->
+  <div class="marquee-wrap">
+    <div class="marquee-track">
+      <span class="marquee-item">Free Shipping Over ₹999</span>
+      <span class="marquee-item">2-Year Warranty</span>
+      <span class="marquee-item">Easy Returns</span>
+      <span class="marquee-item">EMI Available</span>
+      <span class="marquee-item">Genuine Products</span>
+      <span class="marquee-item">24/7 Support</span>
+      <span class="marquee-item">Secure Checkout</span>
+      <span class="marquee-item">Price Match Guarantee</span>
+      <!-- duplicate for seamless loop -->
+      <span class="marquee-item">Free Shipping Over ₹999</span>
+      <span class="marquee-item">2-Year Warranty</span>
+      <span class="marquee-item">Easy Returns</span>
+      <span class="marquee-item">EMI Available</span>
+      <span class="marquee-item">Genuine Products</span>
+      <span class="marquee-item">24/7 Support</span>
+      <span class="marquee-item">Secure Checkout</span>
+      <span class="marquee-item">Price Match Guarantee</span>
+    </div>
+  </div>
+
+  <!-- CATEGORIES -->
+  <section class="categories">
+    <div class="categories-header">
+      <div>
+        <p class="section-label">Browse by</p>
+        <h2 class="section-title">CATEGORIES</h2>
+      </div>
+      <a href="#" class="cat-link">View All →</a>
+    </div>
+    <div class="categories-grid">
+      <div class="cat-card">
+        <div class="cat-icon">📱</div>
+        <div class="cat-name">Smartphones</div>
+        <div class="cat-count">1,240 items</div>
+      </div>
+      <div class="cat-card">
+        <div class="cat-icon">💻</div>
+        <div class="cat-name">Laptops</div>
+        <div class="cat-count">680 items</div>
+      </div>
+      <div class="cat-card">
+        <div class="cat-icon">🎧</div>
+        <div class="cat-name">Audio</div>
+        <div class="cat-count">940 items</div>
+      </div>
+      <div class="cat-card">
+        <div class="cat-icon">⌚</div>
+        <div class="cat-name">Wearables</div>
+        <div class="cat-count">520 items</div>
+      </div>
+      <div class="cat-card">
+        <div class="cat-icon">🖥️</div>
+        <div class="cat-name">Monitors</div>
+        <div class="cat-count">310 items</div>
+      </div>
+      <div class="cat-card">
+        <div class="cat-icon">🎮</div>
+        <div class="cat-name">Gaming</div>
+        <div class="cat-count">870 items</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PRODUCTS -->
+  <section id="products" style="background: var(--bg);">
+    <div class="products-header">
+      <div>
+        <p class="section-label">Hand-picked</p>
+        <h2 class="section-title">FEATURED GEAR</h2>
+      </div>
+      <div class="filter-tabs">
+        <button class="tab active">All</button>
+        <button class="tab">New</button>
+        <button class="tab">Sale</button>
+        <button class="tab">Top Rated</button>
+      </div>
+    </div>
+
+    <div class="products-grid">
+
+      <!-- Card 1 -->
+      <div class="product-card">
+        <span class="product-badge badge-new">New</span>
+        <div class="product-fav">♡</div>
+        <div class="product-image">
+          📱
+          <div class="product-overlay">
+            <button class="overlay-btn">Quick View</button>
+          </div>
+        </div>
+        <div class="product-info">
+          <div class="product-brand">Apple</div>
+          <div class="product-name">iPhone 16 Pro Max — 256GB Titanium Black</div>
+          <div class="product-rating">
+            <span class="stars">★★★★★</span>
+            <span class="rating-count">(2.4k)</span>
+          </div>
+          <div class="product-footer">
+            <div class="product-price">
+              <span class="price-current">₹1,34,990</span>
+            </div>
+            <button class="btn-add">+</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 2 -->
+      <div class="product-card">
+        <span class="product-badge badge-hot">Hot</span>
+        <div class="product-fav">♡</div>
+        <div class="product-image">
+          🎧
+          <div class="product-overlay">
+            <button class="overlay-btn">Quick View</button>
+          </div>
+        </div>
+        <div class="product-info">
+          <div class="product-brand">Sony</div>
+          <div class="product-name">WH-1000XM6 Wireless ANC Headphones</div>
+          <div class="product-rating">
+            <span class="stars">★★★★★</span>
+            <span class="rating-count">(5.1k)</span>
+          </div>
+          <div class="product-footer">
+            <div class="product-price">
+              <span class="price-current">₹28,490</span>
+              <span class="price-old">₹34,990</span>
+            </div>
+            <button class="btn-add">+</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 3 -->
+      <div class="product-card">
+        <span class="product-badge badge-sale">−20%</span>
+        <div class="product-fav">♡</div>
+        <div class="product-image">
+          💻
+          <div class="product-overlay">
+            <button class="overlay-btn">Quick View</button>
+          </div>
+        </div>
+        <div class="product-info">
+          <div class="product-brand">Apple</div>
+          <div class="product-name">MacBook Pro 14" M4 Pro — Space Black</div>
+          <div class="product-rating">
+            <span class="stars">★★★★★</span>
+            <span class="rating-count">(1.8k)</span>
+          </div>
+          <div class="product-footer">
+            <div class="product-price">
+              <span class="price-current">₹1,89,900</span>
+              <span class="price-old">₹2,29,900</span>
+            </div>
+            <button class="btn-add">+</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 4 -->
+      <div class="product-card">
+        <div class="product-fav">♡</div>
+        <div class="product-image">
+          ⌚
+          <div class="product-overlay">
+            <button class="overlay-btn">Quick View</button>
+          </div>
+        </div>
+        <div class="product-info">
+          <div class="product-brand">Samsung</div>
+          <div class="product-name">Galaxy Watch Ultra — 47mm Titanium</div>
+          <div class="product-rating">
+            <span class="stars">★★★★☆</span>
+            <span class="rating-count">(890)</span>
+          </div>
+          <div class="product-footer">
+            <div class="product-price">
+              <span class="price-current">₹62,999</span>
+            </div>
+            <button class="btn-add">+</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 5 -->
+      <div class="product-card">
+        <span class="product-badge badge-new">New</span>
+        <div class="product-fav">♡</div>
+        <div class="product-image">
+          🖥️
+          <div class="product-overlay">
+            <button class="overlay-btn">Quick View</button>
+          </div>
+        </div>
+        <div class="product-info">
+          <div class="product-brand">LG</div>
+          <div class="product-name">UltraGear 27" 4K OLED 240Hz Gaming Monitor</div>
+          <div class="product-rating">
+            <span class="stars">★★★★★</span>
+            <span class="rating-count">(3.2k)</span>
+          </div>
+          <div class="product-footer">
+            <div class="product-price">
+              <span class="price-current">₹74,990</span>
+              <span class="price-old">₹89,999</span>
+            </div>
+            <button class="btn-add">+</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 6 -->
+      <div class="product-card">
+        <span class="product-badge badge-hot">Hot</span>
+        <div class="product-fav">♡</div>
+        <div class="product-image">
+          🎮
+          <div class="product-overlay">
+            <button class="overlay-btn">Quick View</button>
+          </div>
+        </div>
+        <div class="product-info">
+          <div class="product-brand">PlayStation</div>
+          <div class="product-name">PS5 Pro 2TB Digital Edition Console</div>
+          <div class="product-rating">
+            <span class="stars">★★★★★</span>
+            <span class="rating-count">(9.7k)</span>
+          </div>
+          <div class="product-footer">
+            <div class="product-price">
+              <span class="price-current">₹54,990</span>
+            </div>
+            <button class="btn-add">+</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 7 -->
+      <div class="product-card">
+        <span class="product-badge badge-sale">−15%</span>
+        <div class="product-fav">♡</div>
+        <div class="product-image">
+          📷
+          <div class="product-overlay">
+            <button class="overlay-btn">Quick View</button>
+          </div>
+        </div>
+        <div class="product-info">
+          <div class="product-brand">Sony</div>
+          <div class="product-name">Alpha A7C II Mirrorless Camera Body Only</div>
+          <div class="product-rating">
+            <span class="stars">★★★★★</span>
+            <span class="rating-count">(1.1k)</span>
+          </div>
+          <div class="product-footer">
+            <div class="product-price">
+              <span class="price-current">₹1,72,990</span>
+              <span class="price-old">₹1,99,990</span>
+            </div>
+            <button class="btn-add">+</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 8 -->
+      <div class="product-card">
+        <div class="product-fav">♡</div>
+        <div class="product-image">
+          🔊
+          <div class="product-overlay">
+            <button class="overlay-btn">Quick View</button>
+          </div>
+        </div>
+        <div class="product-info">
+          <div class="product-brand">Bose</div>
+          <div class="product-name">SoundLink Max Portable Bluetooth Speaker</div>
+          <div class="product-rating">
+            <span class="stars">★★★★☆</span>
+            <span class="rating-count">(740)</span>
+          </div>
+          <div class="product-footer">
+            <div class="product-price">
+              <span class="price-current">₹34,990</span>
+            </div>
+            <button class="btn-add">+</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- DEAL BANNER -->
+  <div class="banner-section">
+    <div class="banner-inner">
+      <div>
+        <div class="banner-tag">⚡ Flash Deal — Limited Time</div>
+        <h2 class="banner-title">
+          GALAXY<br>
+          S25 ULTRA<br>
+          <span style="color: var(--accent);">UP TO 30% OFF</span>
+        </h2>
+        <p class="banner-desc">
+          Experience the most powerful Galaxy ever — with ProVisual Engine, titanium frame, and 200MP camera. Don't miss this limited-time price drop.
+        </p>
+        <div class="banner-timer">
+          <div class="timer-block">
+            <div class="timer-num">08</div>
+            <div class="timer-label">Hours</div>
+          </div>
+          <div class="timer-block">
+            <div class="timer-num">34</div>
+            <div class="timer-label">Minutes</div>
+          </div>
+          <div class="timer-block">
+            <div class="timer-num">17</div>
+            <div class="timer-label">Seconds</div>
+          </div>
+        </div>
+        <br/>
+        <a href="#" class="btn-primary" style="display:inline-block; margin-top:1.5rem;">Grab the Deal</a>
+      </div>
+      <div class="banner-product">📱</div>
+    </div>
+  </div>
+
+  <!-- SPECS STRIP -->
+  <div class="specs-strip">
+    <div class="specs-grid">
+      <div class="spec-item">
+        <div class="spec-number">01</div>
+        <div class="spec-title">100% Genuine</div>
+        <div class="spec-desc">Every product is sourced directly from authorized distributors and brand partners.</div>
+      </div>
+      <div class="spec-item">
+        <div class="spec-number">02</div>
+        <div class="spec-title">2-Year Warranty</div>
+        <div class="spec-desc">All products come with manufacturer warranty plus our extended protection plan.</div>
+      </div>
+      <div class="spec-item">
+        <div class="spec-number">03</div>
+        <div class="spec-title">24h Delivery</div>
+        <div class="spec-desc">Same-day dispatch for orders placed before 2 PM. Express delivery available.</div>
+      </div>
+      <div class="spec-item">
+        <div class="spec-number">04</div>
+        <div class="spec-title">Easy Returns</div>
+        <div class="spec-desc">30-day hassle-free return policy. No questions asked, full refund guaranteed.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TESTIMONIALS -->
+  <section class="testimonials">
+    <p class="section-label">What customers say</p>
+    <h2 class="section-title">REAL REVIEWS</h2>
+    <div class="testimonials-grid">
+
+      <div class="testi-card">
+        <div class="testi-stars">★★★★★</div>
+        <div class="testi-quote">"</div>
+        <p class="testi-text">
+          Ordered the Sony XM6 on a Tuesday, arrived Wednesday morning. Product is 100% genuine with full warranty. VOLT is now my go-to for all electronics.
+        </p>
+        <div class="testi-author">
+          <div class="author-avatar">👤</div>
+          <div>
+            <div class="author-name">Arjun Mehta</div>
+            <div class="author-role">Mumbai · Verified Buyer</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="testi-card">
+        <div class="testi-stars">★★★★★</div>
+        <div class="testi-quote">"</div>
+        <p class="testi-text">
+          Got the MacBook Pro M4 at ₹40k less than the Apple Store. Sealed box, original receipt, and their support team helped me set it up. Incredible service.
+        </p>
+        <div class="testi-author">
+          <div class="author-avatar">👤</div>
+          <div>
+            <div class="author-name">Priya Sharma</div>
+            <div class="author-role">Bangalore · Verified Buyer</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="testi-card">
+        <div class="testi-stars">★★★★★</div>
+        <div class="testi-quote">"</div>
+        <p class="testi-text">
+          The UI is clean, checkout is smooth, and delivery is ridiculously fast. Bought my PS5 Pro and it was at my door in 18 hours. Absolutely stellar.
+        </p>
+        <div class="testi-author">
+          <div class="author-avatar">👤</div>
+          <div>
+            <div class="author-name">Rohan Kulkarni</div>
+            <div class="author-role">Pune · Verified Buyer</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- NEWSLETTER -->
+  <section class="newsletter">
+    <div class="newsletter-content">
+      <p class="section-label" style="text-align:center;">Stay wired in</p>
+      <h2 class="newsletter-title">GET THE BEST<br>DEALS FIRST</h2>
+      <p class="newsletter-sub">Subscribe to our newsletter and be the first to know about flash sales, new arrivals, and exclusive tech drops.</p>
+      <div class="newsletter-form">
+        <input class="newsletter-input" type="email" placeholder="Enter your email address"/>
+        <button class="newsletter-btn">Subscribe →</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-top">
+      <div class="footer-brand">
+        <span class="nav-logo">VOLT</span>
+        <p class="footer-desc">
+          India's most trusted electronics destination. Premium products, unbeatable prices, and lightning-fast delivery since 2019.
+        </p>
+        <div class="footer-socials">
+          <div class="social-btn">𝕏</div>
+          <div class="social-btn">f</div>
+          <div class="social-btn">in</div>
+          <div class="social-btn">▶</div>
+        </div>
+      </div>
+      <div>
+        <div class="footer-col-title">Shop</div>
+        <ul class="footer-links">
+          <li><a href="#">Smartphones</a></li>
+          <li><a href="#">Laptops</a></li>
+          <li><a href="#">Headphones</a></li>
+          <li><a href="#">Wearables</a></li>
+          <li><a href="#">Gaming</a></li>
+          <li><a href="#">Cameras</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer-col-title">Support</div>
+        <ul class="footer-links">
+          <li><a href="#">Track Order</a></li>
+          <li><a href="#">Returns</a></li>
+          <li><a href="#">Warranty</a></li>
+          <li><a href="#">Contact Us</a></li>
+          <li><a href="#">FAQ</a></li>
+          <li><a href="#">Store Locator</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer-col-title">Company</div>
+        <ul class="footer-links">
+          <li><a href="#">About VOLT</a></li>
+          <li><a href="#">Careers</a></li>
+          <li><a href="#">Press</a></li>
+          <li><a href="#">Partners</a></li>
+          <li><a href="#">Blog</a></li>
+          <li><a href="#">Affiliates</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div class="footer-copy">© 2026 VOLT Electronics Pvt. Ltd. All rights reserved.</div>
+      <div class="footer-legal">
+        <a href="#">Privacy Policy</a>
+        <a href="#">Terms of Use</a>
+        <a href="#">Cookie Settings</a>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>
